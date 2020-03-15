@@ -12,7 +12,6 @@ import (
 	"flag"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"net"
-	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -71,6 +70,6 @@ func start(addr string, dsn string) {
 		assetsPath,
 		mediaPath,
 	)
-	server.GorillaInit()
-	panic(http.ListenAndServe(addr, server))
+	server.GorillaInit(addr)
+	//panic(http.ListenAndServe(addr, server))
 }

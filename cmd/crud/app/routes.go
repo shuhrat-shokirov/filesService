@@ -9,7 +9,7 @@ import (
 
 const multipartMaxBytes = 10 * 1024 * 1024
 
-func (receiver *server) GorillaInit() {
+func (receiver *server) GorillaInit(addr string) {
 	router := mux.NewRouter()
 	router.HandleFunc(grut, receiver.handleRedirect())
 	router.HandleFunc(upload, receiver.handleUpload())
@@ -20,7 +20,7 @@ func (receiver *server) GorillaInit() {
 	router.PathPrefix(grut).HandlerFunc(receiver.handleGetFile())
 	http.Handle(grut, router)
 	fmt.Println("Server is listening...")
-	err := http.ListenAndServe(PortGor, nil)
+	err := http.ListenAndServe(addr, receiver)
 	if err != nil {
 		log.Fatal("can't start server")
 	}
