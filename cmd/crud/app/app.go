@@ -3,12 +3,10 @@ package app
 import (
 	"errors"
 	"fileService/pkg/crud/services/files"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"net/http"
 )
 
 type server struct {
-	pool          *pgxpool.Pool
 	router        http.Handler
 	filesSvc      *files.FilesSvc
 	templatesPath string
@@ -16,10 +14,7 @@ type server struct {
 	mediaPath     string
 }
 
-func NewServer(router http.Handler, pool *pgxpool.Pool, filesSvc *files.FilesSvc, templatesPath string, assetsPath string, mediaPath string) *server {
-	if pool == nil {
-		panic(errors.New("pool can't be nil"))
-	}
+func NewServer(router http.Handler, filesSvc *files.FilesSvc, templatesPath string, assetsPath string, mediaPath string) *server {
 	if filesSvc == nil {
 		panic(errors.New("filesSvc can't be nil"))
 	}
@@ -35,7 +30,6 @@ func NewServer(router http.Handler, pool *pgxpool.Pool, filesSvc *files.FilesSvc
 
 	return &server{
 		router:        router,
-		pool:          pool,
 		filesSvc:      filesSvc,
 		templatesPath: templatesPath,
 		assetsPath:    assetsPath,

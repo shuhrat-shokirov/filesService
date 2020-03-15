@@ -8,7 +8,6 @@ import (
 	"strings"
 	"html/template"
 )
-
 func(receiver *server) handleGetFile() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, request *http.Request) {
 		fileName := strings.TrimPrefix(request.RequestURI, grut)
@@ -38,8 +37,9 @@ func( receiver *server) handleUpload() func(http.ResponseWriter, *http.Request) 
 		tpl *template.Template
 		err error
 	)
+
 	tpl, err = template.ParseFiles(
-		filepath.Join(receiver.templatesPath, way, fileHtml),
+		filepath.Join(receiver.templatesPath, "admin", fileHtml),
 		filepath.Join(receiver.templatesPath, baseHtml),
 	)
 	if err != nil {
@@ -64,13 +64,16 @@ func( receiver *server) handleUpload() func(http.ResponseWriter, *http.Request) 
 }
 
 func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWriter, request *http.Request) {
+
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
+
 		err := request.ParseMultipartForm(multipartMaxBytes)
 		if err != nil {
 			log.Print(err)
 			http.Error(responseWriter, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
+
 		_, header, err := request.FormFile(filesForm)
 		uploadedFiles := ""
 		if err != nil {
@@ -78,19 +81,24 @@ func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWrite
 			http.Error(responseWriter, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
+
 		contentType := header.Header.Get(conType)
 		formFiles := request.MultipartForm
 		files := formFiles.File
+
 		for _, file := range files[filesForm] {
 			openFile, err := file.Open()
 			if err != nil {
 				log.Printf("can't create file: %v", err)
 			}
+
 			uploadedFiles, err = receiver.filesSvc.Save(openFile, contentType)
 			if err != nil {
 				log.Printf("can't save file: %v", err)
 			}
+
 		}
+
 		responseWriter.Header().Set(conType, value)
 		_, err = responseWriter.Write([]byte(uploadedFiles))
 		if err != nil { // ?
@@ -101,12 +109,13 @@ func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWrite
 			)
 			return
 		}
+
 		http.Redirect(responseWriter, request, upload, http.StatusFound)
 	}
 }
 
 func( receiver *server) handleFavicon() func(http.ResponseWriter, *http.Request) {
-	file, err := ioutil.ReadFile(filepath.Join(receiver.assetsPath, "favicon.ico"))
+	file, err := ioutil.ReadFile(filepath.Join(receiver.assetsPath, favicon))
 	if err != nil {
 		panic(err)
 	}

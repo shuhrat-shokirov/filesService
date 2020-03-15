@@ -6,11 +6,9 @@ package main
 // method + function
 
 import (
-	"context"
 	"fileService/cmd/crud/app"
 	"fileService/pkg/crud/services/files"
 	"flag"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"net"
 	"os"
 	"path/filepath"
@@ -19,12 +17,10 @@ import (
 var (
 	host = flag.String("host", "", "Server host")
 	port = flag.String("port", "", "Server port")
-	dsn  = flag.String("dsn", "", "Postgres DSN")
 )
 
 const envHost = "HOST"
 const envPort = "PORT"
-const envDSN  = "DATABASE_URL"
 
 func fromFLagOrEnv(flag *string, envName string) (server string, ok bool){
 	if *flag != ""{
@@ -43,28 +39,18 @@ func main() {
 	if !ok {
 		portf = *port
 	}
-	dsnf, ok := fromFLagOrEnv(dsn, envDSN)
-	if !ok {
-		dsnf = *dsn
-	}
-
 	addr := net.JoinHostPort(hostf, portf)
-	start(addr, dsnf)
+	start(addr)
 }
 
-func start(addr string, dsn string) {
+func start(addr string) {
 	router := app.NewExactMux()
-	pool, err := pgxpool.Connect(context.Background(), dsn)
-	if err != nil {
-		panic(err)
-	}
 	templatesPath := filepath.Join("web", "templates")
 	assetsPath := filepath.Join("web", "assets")
 	mediaPath := filepath.Join("web", "media")
 	filesSvc := files.NewFilesSvc(mediaPath)
 	server := app.NewServer(
 		router,
-		pool,
 		filesSvc,
 		templatesPath,
 		assetsPath,
