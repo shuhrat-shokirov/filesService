@@ -12,5 +12,5 @@ const (
 	uploading = "/upload"
 	favicon = "/favicon.ico"
 	media = "/media"
-	portGor = ":8181"
+	PortGor = ":8181"
 )
