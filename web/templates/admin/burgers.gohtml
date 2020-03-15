@@ -1,0 +1,18 @@
+{{/* берём шаблон base и встраиваем туда block body */}}
+{{template "base" . }}
+{{define "body"}}
+    <div class="container">
+        <div class="row">
+            <div class="col"><h1> Test Text </h1></div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form action="/uploading" method="post" enctype="multipart/form-data">
+                    {{/* mime type */}}
+                    <input type="file" name="files" accept="media_type" multiple/>
+                    <button>Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{{end}}
