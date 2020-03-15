@@ -64,16 +64,13 @@ func( receiver *server) handleUpload() func(http.ResponseWriter, *http.Request) 
 }
 
 func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWriter, request *http.Request) {
-
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
-
 		err := request.ParseMultipartForm(multipartMaxBytes)
 		if err != nil {
 			log.Print(err)
 			http.Error(responseWriter, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-
 		_, header, err := request.FormFile(filesForm)
 		uploadedFiles := ""
 		if err != nil {
@@ -81,24 +78,19 @@ func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWrite
 			http.Error(responseWriter, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-
 		contentType := header.Header.Get(conType)
 		formFiles := request.MultipartForm
 		files := formFiles.File
-
 		for _, file := range files[filesForm] {
 			openFile, err := file.Open()
 			if err != nil {
 				log.Printf("can't create file: %v", err)
 			}
-
 			uploadedFiles, err = receiver.filesSvc.Save(openFile, contentType)
 			if err != nil {
 				log.Printf("can't save file: %v", err)
 			}
-
 		}
-
 		responseWriter.Header().Set(conType, value)
 		_, err = responseWriter.Write([]byte(uploadedFiles))
 		if err != nil { // ?
@@ -109,7 +101,6 @@ func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWrite
 			)
 			return
 		}
-
 		http.Redirect(responseWriter, request, upload, http.StatusFound)
 	}
 }
