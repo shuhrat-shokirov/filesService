@@ -9,7 +9,7 @@ const (
 	value = "application/json"
 	upload = "/upload"
 	grut = "/"
-	uploading = "/upload"
+	uploading = "/uploading"
 	favicon = "/favicon.ico"
 	media = "/media"
 	PortGor = ":8181"
