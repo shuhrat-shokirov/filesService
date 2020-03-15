@@ -20,7 +20,7 @@ func (receiver *server) GorillaInit() {
 	router.PathPrefix(grut).HandlerFunc(receiver.handleGetFile())
 	http.Handle(grut, router)
 	fmt.Println("Server is listening...")
-	err := http.ListenAndServe(portGor, nil)
+	err := http.ListenAndServe(PortGor, nil)
 	if err != nil {
 		log.Fatal("can't start server")
 	}
