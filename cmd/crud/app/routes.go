@@ -22,6 +22,6 @@ func (receiver *server) GorillaInit() {
 	fmt.Println("Server is listening...")
 	err := http.ListenAndServe(portGor, nil)
 	if err != nil {
-		log.Fatal("can't start server:")
+		log.Fatal("can't start server")
 	}
 }
