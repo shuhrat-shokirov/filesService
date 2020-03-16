@@ -3,11 +3,10 @@ package files
 import (
 	"errors"
 	"fmt"
-	jsonwriter "github.com/shuhrat-shokirov/rest/pkg/rest"
 	"github.com/google/uuid"
+	jsonwriter "github.com/shuhrat-shokirov/rest/pkg/rest"
 	"io"
 	"log"
-	"mime"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,16 +25,14 @@ func NewFilesSvc(mediaPath string) *FilesSvc {
 
 func (receiver *FilesSvc) Save(sources io.Reader, contentType string) (name string, err error) {
 	var path string
-	extensions, err := mime.ExtensionsByType(contentType)
-	if err != nil {
-		return "", err
-	}
-	if len(extensions) == 0 {
+	extension := (strings.Split(contentType, "/"))[1]
+	if len(extension) == 0 {
 		return "", errors.New("invalid extension")
 	}
 	uuidV4 := uuid.New().String()
-	name = fmt.Sprintf("%s%s", uuidV4, extensions[0])
+	name = fmt.Sprintf("%s.%s", uuidV4, extension)
 	path = filepath.Join(receiver.mediaPath, name)
+	log.Print(name)
 	dst, err := os.Create(path)
 	if err != nil {
 		log.Print("can't close file")
@@ -49,8 +46,8 @@ func (receiver *FilesSvc) Save(sources io.Reader, contentType string) (name stri
 	if err != nil {
 		log.Printf("ca't save file: %v", sources)
 	}
-	filesPath := strings.Split(path, name)
-	pathFile := filesPath[0]
-	upload, err := jsonwriter.JsonFileUpload(pathFile)
+	//filesPath := strings.Split(path, name)
+	//pathFile := filesPath[0]
+	upload, err := jsonwriter.JsonFileUpload(name)
 	return upload, nil
 }

@@ -1,12 +1,12 @@
 package app
 
 import (
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
-	"html/template"
 )
 func(receiver *server) handleGetFile() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, request *http.Request) {
@@ -71,20 +71,19 @@ func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWrite
 			http.Error(responseWriter, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-
-		_, header, err := request.FormFile(filesForm)
+		file, header, err := request.FormFile("data")
 		uploadedFiles := ""
 		if err != nil {
 			log.Print(err)
 			http.Error(responseWriter, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-
+		defer file.Close()
 		contentType := header.Header.Get(conType)
 		formFiles := request.MultipartForm
 		files := formFiles.File
 
-		for _, file := range files[filesForm] {
+		for _, file := range files["data"] {
 			openFile, err := file.Open()
 			if err != nil {
 				log.Printf("can't create file: %v", err)
@@ -109,18 +108,5 @@ func( receiver *server) handleFilesSave() func(responseWriter http.ResponseWrite
 		}
 
 		http.Redirect(responseWriter, request, upload, http.StatusFound)
-	}
-}
-
-func( receiver *server) handleFavicon() func(http.ResponseWriter, *http.Request) {
-	file, err := ioutil.ReadFile(filepath.Join(receiver.assetsPath, favicon))
-	if err != nil {
-		panic(err)
-	}
-	return func(writer http.ResponseWriter, request *http.Request) {
-		_, err := writer.Write(file)
-		if err != nil {
-			log.Print(err)
-		}
 	}
 }

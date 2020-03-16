@@ -3,18 +3,19 @@ package app
 import (
 	"errors"
 	"fileService/pkg/crud/services/files"
+	"github.com/shuhrat-shokirov/mux/pkg/mux"
 	"net/http"
 )
 
 type server struct {
-	router        http.Handler
+	router        *mux.ExactMux
 	filesSvc      *files.FilesSvc
 	templatesPath string
 	assetsPath    string
 	mediaPath     string
 }
 
-func NewServer(router http.Handler, filesSvc *files.FilesSvc, templatesPath string, assetsPath string, mediaPath string) *server {
+func NewServer(router *mux.ExactMux, filesSvc *files.FilesSvc, templatesPath string, assetsPath string, mediaPath string) *server {
 	if filesSvc == nil {
 		panic(errors.New("filesSvc can't be nil"))
 	}

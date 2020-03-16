@@ -9,7 +9,9 @@ import (
 	"fileService/cmd/crud/app"
 	"fileService/pkg/crud/services/files"
 	"flag"
+	"github.com/shuhrat-shokirov/mux/pkg/mux"
 	"net"
+	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -44,7 +46,7 @@ func main() {
 }
 
 func start(addr string) {
-	router := app.NewExactMux()
+	router := mux.NewExactMux()
 	templatesPath := filepath.Join("web", "templates")
 	assetsPath := filepath.Join("web", "assets")
 	mediaPath := filepath.Join("web", "media")
@@ -56,6 +58,6 @@ func start(addr string) {
 		assetsPath,
 		mediaPath,
 	)
-	server.GorillaInit(addr)
-	//panic(http.ListenAndServe(addr, server))
+	server.Init(addr)
+	panic(http.ListenAndServe(addr, server))
 }
