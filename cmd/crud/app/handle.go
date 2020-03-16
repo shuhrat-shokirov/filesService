@@ -25,9 +25,7 @@ func(receiver *server) handleGetFile() func(w http.ResponseWriter, r *http.Reque
 }
 
 func (receiver *server) handleRedirect() func(responseWriter http.ResponseWriter, request *http.Request) {
-
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
-
 		http.Redirect(responseWriter, request, upload, http.StatusFound)
 	}
 }
